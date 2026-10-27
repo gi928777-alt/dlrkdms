@@ -24,7 +24,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin-top:28px}
 <body>
 <header><div class="nav"><div class="brand"><div class="logo" id="brandLogo">Py</div><span id="brandTitle">코딩 문법 암기실</span></div><div class="language-picker"><label for="languageSelect">언어 선택</label><select id="languageSelect"><option value="python">Python</option><option value="java">Java</option></select></div></div></header>
 <main>
-<section class="hero"><div><div class="eyebrow" id="heroEyebrow">Python practice room</div><h1>외우는 데서 끝내지 말고,<br>직접 설명할 수 있게.</h1><p id="heroDescription">회사에서 자주 만나는 파이썬 함수와 문법을 카드로 익히고, 퀴즈로 기억을 확인해 보세요.</p></div><div class="hero-tag" id="heroTag">파일 처리 · 클래스 · 예외 처리</div></section>
+<section class="hero"><div><div class="eyebrow" id="heroEyebrow">Python practice room <span style="font-size:10px;background:var(--accent-soft);color:var(--accent);padding:2px 6px;border-radius:6px;margin-left:6px;font-weight:600;vertical-align:middle;">v2.0</span></div><h1>외우는 데서 끝내지 말고,<br>직접 설명할 수 있게.</h1><p id="heroDescription">회사에서 자주 만나는 파이썬 함수와 문법을 카드로 익히고, 퀴즈로 기억을 확인해 보세요.</p></div><div class="hero-tag" id="heroTag">파일 처리 · 클래스 · 예외 처리</div></section>
 <section class="stats">
 <div class="stat"><div class="stat-label">학습 카드</div><div class="stat-num" id="totalCards">0</div></div>
 <div class="stat"><div class="stat-label">누적 정답</div><div class="stat-num" id="totalCorrect">0 <span>회</span></div></div>
@@ -118,7 +118,22 @@ function langSaved(){return state.saved[currentLanguage]}
 function langStats(){return state.stats[currentLanguage]}
 function persist(){localStorage.setItem(KEY,JSON.stringify(state));updateStats()}
 function allCards(){const defaults=currentLanguage==='java'?javaDefaults:pythonDefaults;return defaults.map((d,i)=>({id:currentLanguage+'-d'+i,name:d[0],category:d[1],meaning:d[2],example:d[3],result:d[4]})).concat(langCustom())}
-function applyLanguage(){const java=currentLanguage==='java';document.getElementById('languageSelect').value=currentLanguage;document.getElementById('brandLogo').textContent=java?'Ja':'Py';document.getElementById('brandTitle').textContent=java?'자바 문법 암기실':'파이썬 함수 암기실';document.getElementById('heroEyebrow').textContent=java?'Java practice room':'Python practice room';document.getElementById('heroDescription').textContent=java?'회사와 수업에서 자주 만나는 자바 메서드와 문법을 카드로 익히고, 퀴즈로 기억을 확인해 보세요.':'회사에서 자주 만나는 파이썬 함수와 문법을 카드로 익히고, 퀴즈로 기억을 확인해 보세요.';document.getElementById('heroTag').textContent=java?'문자열 · 객체지향 · 예외 처리':'파일 처리 · 클래스 · 예외 처리';document.getElementById('footerLabel').textContent=java?'Java Syntax Study':'Python Function Study';document.getElementById('searchInput').placeholder=java?'메서드·문법 검색...':'함수 검색...';document.getElementById('newName').placeholder=java?'예: startsWith()':'예: map()';document.getElementById('newExample').placeholder=java?'예: text.startsWith("A")':'예: result = list(map(str, numbers))';quiz.started=false;renderCards();showView('learn')}
+function applyLanguage(){
+  const java=currentLanguage==='java';
+  document.getElementById('languageSelect').value=currentLanguage;
+  document.getElementById('brandLogo').textContent=java?'Ja':'Py';
+  document.getElementById('brandTitle').textContent=java?'자바 문법 암기실':'파이썬 함수 암기실';
+  document.getElementById('heroEyebrow').innerHTML=java?'Java practice room <span style="font-size:10px;background:var(--accent-soft);color:var(--accent);padding:2px 6px;border-radius:6px;margin-left:6px;font-weight:600;vertical-align:middle;">v2.0</span>':'Python practice room <span style="font-size:10px;background:var(--accent-soft);color:var(--accent);padding:2px 6px;border-radius:6px;margin-left:6px;font-weight:600;vertical-align:middle;">v2.0</span>';
+  document.getElementById('heroDescription').textContent=java?'회사와 수업에서 자주 만나는 자바 메서드와 문법을 카드로 익히고, 퀴즈로 기억을 확인해 보세요.':'회사에서 자주 만나는 파이썬 함수와 문법을 카드로 익히고, 퀴즈로 기억을 확인해 보세요.';
+  document.getElementById('heroTag').textContent=java?'문자열 · 객체지향 · 예외 처리':'파일 처리 · 클래스 · 예외 처리';
+  document.getElementById('footerLabel').textContent=java?'Java Syntax Study':'Python Function Study';
+  document.getElementById('searchInput').placeholder=java?'메서드·문법 검색...':'함수 검색...';
+  document.getElementById('newName').placeholder=java?'예: startsWith()':'예: map()';
+  document.getElementById('newExample').placeholder=java?'예: text.startsWith("A")':'예: result = list(map(str, numbers))';
+  quiz.started=false;
+  renderCards();
+  showView('learn');
+}
 document.getElementById('languageSelect').addEventListener('change',e=>{currentLanguage=e.target.value;localStorage.setItem('studyLanguage',currentLanguage);applyLanguage()});
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),2000)}
