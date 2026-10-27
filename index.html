@@ -27,7 +27,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin-top:28px}
 <body>
 <header><div class="nav"><div class="brand"><div class="logo" id="brandLogo">Py</div><span id="brandTitle">코딩 문법 암기실</span></div><div class="language-picker"><label for="languageSelect">언어 선택</label><select id="languageSelect"><option value="python">Python</option><option value="java">Java</option></select></div></div></header>
 <main>
-<section class="hero"><div><div class="eyebrow" id="heroEyebrow">Python practice room <span style="font-size:10px;background:var(--accent-soft);color:var(--accent);padding:2px 6px;border-radius:6px;margin-left:6px;font-weight:600;vertical-align:middle;">v2.0</span></div><h1>외우는 데서 끝내지 말고,<br>직접 설명할 수 있게.</h1><p id="heroDescription">회사에서 자주 만나는 파이썬 함수와 문법을 카드로 익히고, 퀴즈로 기억을 확인해 보세요.</p></div><div class="hero-tag" id="heroTag">파일 처리 · 클래스 · 예외 처리</div></section>
+<section class="hero"><div><div class="eyebrow" id="heroEyebrow">Python practice room <span style="font-size:10px;background:var(--accent-soft);color:var(--accent);padding:2px 6px;border-radius:6px;margin-left:6px;font-weight:600;vertical-align:middle;">v2.1</span></div><h1>외우는 데서 끝내지 말고,<br>직접 설명할 수 있게.</h1><p id="heroDescription">회사에서 자주 만나는 파이썬 함수와 문법을 카드로 익히고, 퀴즈로 기억을 확인해 보세요.</p></div><div class="hero-tag" id="heroTag">파일 처리 · 클래스 · 예외 처리</div></section>
 <section class="stats">
 <div class="stat"><div class="stat-label">학습 카드</div><div class="stat-num" id="totalCards">0</div></div>
 <div class="stat"><div class="stat-label">누적 정답</div><div class="stat-num" id="totalCorrect">0 <span>회</span></div></div>
@@ -72,12 +72,11 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin-top:28px}
         </form>
       </div>
       <div id="authLoggedIn" style="display:none;justify-content:space-between;align-items:center">
-        <div><strong id="userEmailTag"></strong> 님으로 로그인 중입니다.</div>
+        <div><strong id="userNicknameTag"></strong> (<span id="userEmailTag"></span>) 님으로 로그인 중입니다.</div>
         <button class="plain" id="logoutBtn" style="padding:6px 12px;font-size:12px">로그아웃</button>
       </div>
     </div>
 
-    <div class="field"><label for="playerName">내 닉네임</label><input id="playerName" maxlength="18" placeholder="예: 코딩별빛"></div>
     <div class="field"><label for="goalCount">목표 카드 수</label><select id="goalCount"><option value="5">5개 - 가볍게 시작</option><option value="10">10개</option><option value="20">20개</option><option value="30">30개</option><option value="50">50개</option><option value="100">100개 - 전부 정복</option></select></div>
     <button class="primary" id="saveGoal">목표 저장 및 온라인 동기화</button>
     <div class="progress" style="margin-top:22px"><span id="goalBar"></span></div>
@@ -162,7 +161,7 @@ function applyLanguage(){
   document.getElementById('languageSelect').value=currentLanguage;
   document.getElementById('brandLogo').textContent=java?'Ja':'Py';
   document.getElementById('brandTitle').textContent=java?'자바 문법 암기실':'파이썬 함수 암기실';
-  document.getElementById('heroEyebrow').innerHTML=java?'Java practice room <span style="font-size:10px;background:var(--accent-soft);color:var(--accent);padding:2px 6px;border-radius:6px;margin-left:6px;font-weight:600;vertical-align:middle;">v2.0</span>':'Python practice room <span style="font-size:10px;background:var(--accent-soft);color:var(--accent);padding:2px 6px;border-radius:6px;margin-left:6px;font-weight:600;vertical-align:middle;">v2.0</span>';
+  document.getElementById('heroEyebrow').innerHTML=java?'Java practice room <span style="font-size:10px;background:var(--accent-soft);color:var(--accent);padding:2px 6px;border-radius:6px;margin-left:6px;font-weight:600;vertical-align:middle;">v2.1</span>':'Python practice room <span style="font-size:10px;background:var(--accent-soft);color:var(--accent);padding:2px 6px;border-radius:6px;margin-left:6px;font-weight:600;vertical-align:middle;">v2.1</span>';
   document.getElementById('heroDescription').textContent=java?'회사와 수업에서 자주 만나는 자바 메서드와 문법을 카드로 익히고, 퀴즈로 기억을 확인해 보세요.':'회사에서 자주 만나는 파이썬 함수와 문법을 카드로 익히고, 퀴즈로 기억을 확인해 보세요.';
   document.getElementById('heroTag').textContent=java?'문자열 · 객체지향 · 예외 처리':'파일 처리 · 클래스 · 예외 처리';
   document.getElementById('footerLabel').textContent=java?'Java Syntax Study':'Python Function Study';
@@ -222,19 +221,18 @@ document.getElementById('authForm').addEventListener('submit', async (e) => {
   const nickname = document.getElementById('authNickname').value.trim();
 
   if (isSignUpMode) {
+    const nickToUse = nickname || '코딩 연습생';
     const { data, error } = await sb.auth.signUp({
       email,
       password,
-      options: { data: { nickname: nickname || '코딩 연습생' } }
+      options: { data: { nickname: nickToUse } }
     });
     if (error) {
       toast('회원가입 실패: ' + error.message);
     } else {
       toast('회원가입 완료! 로그인되었습니다.');
-      if(nickname) {
-        state.profile.name = nickname;
-        persist();
-      }
+      state.profile.name = nickToUse;
+      persist();
       checkAuthState();
     }
   } else {
@@ -264,10 +262,9 @@ async function checkAuthState() {
     document.getElementById('authLoggedOut').style.display = 'none';
     document.getElementById('authLoggedIn').style.display = 'flex';
     document.getElementById('userEmailTag').textContent = session.user.email;
-    if (session.user.user_metadata?.nickname) {
-      state.profile.name = session.user.user_metadata.nickname;
-      document.getElementById('playerName').value = state.profile.name;
-    }
+    const nick = session.user.user_metadata?.nickname || state.profile.name || '코딩 연습생';
+    document.getElementById('userNicknameTag').textContent = nick;
+    state.profile.name = nick;
   } else {
     document.getElementById('authLoggedOut').style.display = 'block';
     document.getElementById('authLoggedIn').style.display = 'none';
@@ -345,7 +342,6 @@ async function loadOnlineLeaderboard() {
 
 function renderGoals(){
   const prof=state.profile;
-  document.getElementById('playerName').value=prof.name||'';
   document.getElementById('goalCount').value=String(prof.goal||10);
   const mastered=masteredCount(),goal=Number(prof.goal||10),pct=Math.min(100,Math.round(mastered/goal*100));
   document.getElementById('goalBar').style.width=pct+'%';
@@ -355,7 +351,6 @@ function renderGoals(){
 }
 
 document.getElementById('saveGoal').addEventListener('click',()=>{
-  state.profile.name=document.getElementById('playerName').value.trim().slice(0,18)||'코딩 연습생';
   state.profile.goal=Number(document.getElementById('goalCount').value)||10;
   persist();
   renderGoals();
